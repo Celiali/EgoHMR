@@ -728,7 +728,10 @@ class GaussianDiffusion:
         :param noise: if specified, the specific Gaussian noise to try to remove.
         :return: predicted/denoised SMPL params / joints, losses, etc.
         """
-        batch_size = batch['img'].shape[0]
+        if 'img' in batch.keys():
+            batch_size = batch['img'].shape[0]
+        else:
+            batch_size = batch['smpl_params']['body_pose'].shape[0]
         full_pose_aa = torch.cat([batch['smpl_params']['global_orient'], batch['smpl_params']['body_pose']],
                                  dim=1).reshape(batch_size, -1, 3)  # [bs, 24, 3]
         full_pose_rotmat = aa_to_rotmat(full_pose_aa.reshape(-1, 3)).view(batch_size, -1, 3, 3)  # [bs, 24, 3, 3]

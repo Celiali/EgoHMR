@@ -520,8 +520,17 @@ def get_example(img_path: str, center_x: float, center_y: float,
            scene_pcd_verts_full_auge, keypoints_3d_crop_auge, keypoints_3d_full_auge, smpl_params, has_smpl_params, \
            center_x_auge, center_y, cam_cx_auge, auge_scale, rotated_img
 
-
-
+def hSMAL_dataaugment(
+                smpl_params: Dict, has_smpl_params: Dict,
+                do_augment: bool, augm_config: CfgNode,) -> Tuple:
+    ############################### get augmentation params
+    if do_augment: #TODO currently not consider data augmentation
+        auge_scale, rot, do_flip, color_scale, tx, ty = do_augmentation(augm_config)
+    else:
+        auge_scale, rot, do_flip, color_scale, tx, ty = 1.0, 0, False, [1.0, 1.0, 1.0], 0., 0.
+    ############################### Process smpl params, only with rot, flip
+    smpl_params, has_smpl_params = smpl_param_processing(smpl_params, has_smpl_params, rot, do_flip)
+    return smpl_params, has_smpl_params
 
 # def crop_to_hips(center_x: float, center_y: float, width: float, height: float, keypoints_2d: np.array) -> Tuple:
 #     """
